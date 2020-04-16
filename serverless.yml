@@ -1,0 +1,79 @@
+service: argus-controller-service
+
+provider:
+
+  name: aws
+  stage: dev
+  region: eu-west-1
+
+  apiKeys:
+    - argus-controller-service-testing-key
+    - argus-controller-service-app-dev
+    - argus-controller-service-camera-dev
+
+  environment:
+    PRODUCERS_TABLE: argus-producers
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamoDB:*
+      Resource: "*"
+
+package:
+  exclude:
+    - node_modules/**
+
+functions:
+
+  registerProducer:
+    runtime: nodejs12.x
+    handler: src/handler/registerProducer.handler
+    events:
+      - http:
+          path: producer
+          method: post
+
+  getProducers:
+    runtime: nodejs12.x
+    handler: src/handler/getProducers.handler
+    events:
+      - http:
+          path: producer
+          method: get
+
+  turnOnProducer:
+    runtime: nodejs12.x
+    handler: src/handler/turnOnProducer.handler
+    events:
+      - http:
+          path: turnOnProducer
+          method: post
+
+  turnOffProducer:
+    runtime: nodejs12.x
+    handler: src/handler/turnOffProducer.handler
+    events:
+      - http:
+          path: turnOffProducer
+          method: post
+
+custom:
+  bucket-arn: arn:aws:s3:::argus-security-app
+
+resources:
+  Resources:
+
+    ProducersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: argus-producers
+        AttributeDefinitions:
+          - AttributeName: accountId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: accountId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

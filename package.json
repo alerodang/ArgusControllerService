@@ -1,0 +1,11 @@
+{
+  "name": "ArgusControllerService",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "aws-sdk": "latest",
+    "serverless": "^1.67.3"
+  }
+}
