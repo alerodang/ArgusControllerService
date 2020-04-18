@@ -1,7 +1,7 @@
 # ArgusControllerService
 This project is part the Argus Security App. 
 
-The project provide an API. This API allows the users to:
+The project provide an API. This API allows API clients to:
  * Register a new producer.
  * Turn on/off a producer.
  * List all producers.
