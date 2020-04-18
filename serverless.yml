@@ -9,7 +9,6 @@ provider:
   apiKeys:
     - argus-controller-service-testing-key
     - argus-controller-service-app-dev
-    - argus-controller-service-camera-dev
 
   environment:
     PRODUCERS_TABLE: argus-producers
