@@ -6,21 +6,20 @@ const docClient = new AWS.DynamoDB.DocumentClient;
 const producersTable = process.env.PRODUCERS_TABLE;
 
 module.exports.handler = async (event) => {
-    const {account, producer: producerName} = JSON.parse(event.body);
+    const {account: accountId, producer: producerName} = JSON.parse(event.body);
 
-    let getParams = { TableName: producersTable, Key:{"accountId": account} };
+    let getParams = {TableName: producersTable, Key:{"accountId": accountId}};
 
-    console.log('DEBUG: Getting the item...');
+    console.log('DEBUG: Getting item...');
     let data = await docClient.get(getParams, function(err,data){
         if (err) console.log(err, err.stack);
-        else console.log('DEBUG dynamo getItem:', data);
+        else console.log('DEBUG: dynamo getItem', data);
     }).promise();
 
     const producers = data['Item'].producers;
     let producerToReturn = undefined;
 
     producers.forEach(producer => {
-        console.log(producer);
         if (producer.name === producerName) {
             producer.state = 'off';
             producerToReturn = producer;
@@ -29,7 +28,7 @@ module.exports.handler = async (event) => {
 
     const putParams = {
         TableName: producersTable,
-        Key: {'accountId': account},
+        Key: {'accountId': accountId},
         UpdateExpression: 'set producers = :producers',
         ExpressionAttributeValues:{
             ':producers': producers
@@ -37,10 +36,10 @@ module.exports.handler = async (event) => {
         ReturnValues:'UPDATED_NEW'
     };
 
-    console.log('DEBUG: Updating the item...');
+    console.log('DEBUG: Updating item...');
     await docClient.update(putParams, function (err, data) {
         if (err) console.log(err, err.stack);
-        else console.log('DEBUG dynamo getItem:', data);
+        else console.log('DEBUG: dynamo getItem', data);
     }).promise();
 
     return {
