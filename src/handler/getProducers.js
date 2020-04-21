@@ -1,12 +1,16 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const jwt = require('jsonwebtoken');
 const dynamoDB = new AWS.DynamoDB.DocumentClient;
 
 const producersTable = process.env.PRODUCERS_TABLE;
 
 module.exports.handler = async (event) => {
-    const {account: accountId} = event.headers;
+    const {Authorization: token} = event.headers;
+
+    const decodedToken = jwt.decode(token);
+    const accountId = decodedToken["email"];
 
     const getStateParams = {Key: {"accountId": accountId}, TableName: producersTable};
     console.log('DEBUG: Getting item...');

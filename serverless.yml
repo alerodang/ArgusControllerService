@@ -32,6 +32,9 @@ functions:
       - http:
           path: producer
           method: post
+          private: true
+          authorizer:
+            arn:  ${self:custom.authorizer-arn}
 
   getProducers:
     runtime: nodejs12.x
@@ -40,6 +43,9 @@ functions:
       - http:
           path: producer
           method: get
+          private: true
+          authorizer:
+            arn:  ${self:custom.authorizer-arn}
 
   turnOnProducer:
     runtime: nodejs12.x
@@ -48,6 +54,9 @@ functions:
       - http:
           path: turnOnProducer
           method: post
+          private: true
+          authorizer:
+            arn:  ${self:custom.authorizer-arn}
 
   turnOffProducer:
     runtime: nodejs12.x
@@ -56,9 +65,13 @@ functions:
       - http:
           path: turnOffProducer
           method: post
+          private: true
+          authorizer:
+            arn:  ${self:custom.authorizer-arn}
 
 custom:
   bucket-arn: arn:aws:s3:::argus-security-app
+  authorizer-arn: arn:aws:cognito-idp:eu-west-1:206386915763:userpool/eu-west-1_vMNp7XqR0
 
 resources:
   Resources:

@@ -3,6 +3,7 @@
 const AWS = require('aws-sdk');
 const dynamoDB = new AWS.DynamoDB;
 const docClient = new AWS.DynamoDB.DocumentClient;
+const jwt = require('jsonwebtoken');
 
 const producersTable = process.env.PRODUCERS_TABLE;
 
@@ -62,9 +63,13 @@ function updateProducer(accountId, producers, secret, initialState, name) {
 }
 
 module.exports.handler = async (event) => {
+    console.log('DEBUG: Parsing header...');
+    const {Authorization: token} = event.headers;
+    const decodedToken = jwt.decode(token);
+    const accountId = decodedToken["email"];
 
     console.log('DEBUG: Parsing body...');
-    const {account: accountId, name, secret} = JSON.parse(event.body);
+    const {name, secret} = JSON.parse(event.body);
 
     const initialState = "off";
     console.log('DEBUG: Getting data...');
