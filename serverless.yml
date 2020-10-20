@@ -19,13 +19,9 @@ provider:
         - dynamoDB:*
       Resource: "*"
 
-package:
-  exclude:
-    - node_modules/**
-
 functions:
 
-  registerProducer:
+  producersRecorder:
     runtime: nodejs12.x
     handler: src/handler/registerProducer.handler
     events:
@@ -36,7 +32,7 @@ functions:
           authorizer:
             arn:  ${self:custom.authorizer-arn}
 
-  getProducers:
+  producersRetriever:
     runtime: nodejs12.x
     handler: src/handler/getProducers.handler
     events:
